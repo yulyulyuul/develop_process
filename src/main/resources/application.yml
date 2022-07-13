@@ -1,0 +1,27 @@
+
+spring:
+
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test_db
+    username: test
+    password: 1234
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    org:
+      springframework: debug
