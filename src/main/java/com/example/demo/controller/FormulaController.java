@@ -11,6 +11,8 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +26,14 @@ public class FormulaController {
     private final FormulaService formulaService;
 
     @PostMapping("/save")
-    public ResponseEntity<FormulaResponseDto> save (@RequestBody FormulaDto formulaDto) {
-        FormulaResponseDto response = formulaService.save(formulaDto);
+    public ResponseEntity<FormulaResponseDto> save (HttpServletRequest request, @RequestBody FormulaDto formulaDto) {
+        FormulaResponseDto response = formulaService.save(request, formulaDto);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<AllFormulaResponseDto>> getAll (@RequestBody UsernameDto usernameDto) {
-        List<AllFormulaResponseDto> response = formulaService.getAll(usernameDto.getUsername());
+    public ResponseEntity<List<AllFormulaResponseDto>> getAll (HttpServletRequest request, @RequestBody UsernameDto usernameDto) {
+        List<AllFormulaResponseDto> response = formulaService.getAll(request, usernameDto.getUsername());
         return ResponseEntity.ok(response);
     }
 }

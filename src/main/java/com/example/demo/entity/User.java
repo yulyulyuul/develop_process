@@ -30,11 +30,14 @@ public class User extends BaseEntity {
 
     @NotBlank
     @Length(max = 255, message = "아이가 너무 김")
+    @Column(unique = true)
     private String username;
 
     @NotBlank
     @Length(max = 255, message = "비밀번호가 너무 김")
     private String password;
+
+    private String authority = "ROLE_USER";
 
     @Builder
     public User (String username, String password) {

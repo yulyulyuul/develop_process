@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+
 
 @RestController
 @RequestMapping("/user")
@@ -24,8 +26,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody UserDto userDto) {
-        userService.login(userDto);
+    public ResponseEntity<Void> login(@RequestBody UserDto userDto, HttpServletResponse response) {
+        userService.login(userDto, response);
         return ResponseEntity.ok().build();
     }
 }

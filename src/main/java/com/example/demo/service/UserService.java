@@ -3,11 +3,13 @@ package com.example.demo.service;
 import com.example.demo.dto.request.UserDto;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.security.SessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -19,6 +21,9 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
+    private final SessionManager sessionManager;
+
+    @Autowired
     private final UserRepository userRepository;
 
     public void create(UserDto userDto) {
@@ -26,7 +31,7 @@ public class UserService {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
 
-        if (alreadyExists(username)) {throw new RuntimeException("username already exists");}
+        if (usernameExists(username)) {throw new RuntimeException("username already exists");}
         if (isValid(username) && isValid(password)) {
             String encodedPassword = encodePassword(password);
             User user = User.builder()
@@ -39,7 +44,7 @@ public class UserService {
         }
     }
 
-    private boolean alreadyExists(String username) {
+    public boolean usernameExists(String username) {
         Optional<User> userOptional = userRepository.findByUsername(username);
         return userOptional.isPresent();
     }
@@ -63,17 +68,18 @@ public class UserService {
         return value.matches("[a-zA-Z_0-9]+");
     }
 
-    public void login(UserDto userDto) {
+    public void login(UserDto userDto, HttpServletResponse response) {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
         String encodedPassword = encodePassword(password);
-        log.info(username, password);
 
-        if (!alreadyExists(username)) {
+        if (!usernameExists(username)) {
             throw new RuntimeException("username doesn't exist");
         }
 
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        if (!encodedPassword.equals(userOptional.get().getPassword())) throw new RuntimeException("password doesn't match");
+        User user = userRepository.findByUsername(username).get();
+        if (!encodedPassword.equals(user.getPassword())) throw new RuntimeException("password doesn't match");
+
+        sessionManager.createSession(user, response);
     }
 }
