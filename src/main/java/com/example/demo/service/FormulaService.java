@@ -10,9 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,9 +54,9 @@ public class FormulaService {
         return isCorrect;
     }
 
-    public List<AllFormulaResponseDto> getAll(HttpServletRequest request, String username) {
+    public List<AllFormulaResponseDto> getAll(HttpServletRequest request, String username, Pageable pageable) {
         checkSession(request);
-        List<Formula> formulas = formulaRepository.findAllByUsername(username);
+        List<Formula> formulas = formulaRepository.findAllByUsername(username, pageable);
         if (formulas.isEmpty()) throw new RuntimeException("There is no formula by this username");
         List<AllFormulaResponseDto> responseDtos = new ArrayList<>();
         for (Formula formula : formulas) {
