@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 
 @RestController
@@ -20,13 +21,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<Void> create( @RequestBody UserDto userDto) {
+    public ResponseEntity<Void> create( @Valid @RequestBody UserDto userDto) {
         userService.create(userDto);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody UserDto userDto, HttpServletResponse response) {
+    public ResponseEntity<Void> login(@Valid @RequestBody UserDto userDto, HttpServletResponse response) {
         userService.login(userDto, response);
         return ResponseEntity.ok().build();
     }

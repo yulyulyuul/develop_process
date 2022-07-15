@@ -60,13 +60,8 @@ public class FormulaService {
         if (formulas.isEmpty()) throw new RuntimeException("There is no formula by this username");
         List<AllFormulaResponseDto> responseDtos = new ArrayList<>();
         for (Formula formula : formulas) {
-            responseDtos.add(createAllFormulaResponseDto(formula));
+            responseDtos.add(new AllFormulaResponseDto(formula.getFormula(), formula.getIsCorrect()));
         }
         return responseDtos;
-    }
-
-    private AllFormulaResponseDto createAllFormulaResponseDto(Formula formula) {
-        AllFormulaResponseDto responseDto = new AllFormulaResponseDto(formula.getFormula(), formula.getIsCorrect());
-        return responseDto;
     }
 }
