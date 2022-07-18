@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.request.UserDto;
 import com.example.demo.entity.User;
+import com.example.demo.exception.type.*;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.SessionManager;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,9 @@ import java.util.Optional;
 @Slf4j
 public class UserService {
 
-    @Autowired
+
     private final SessionManager sessionManager;
 
-    @Autowired
     private final UserRepository userRepository;
 
     public void create(UserDto userDto) {
@@ -31,7 +31,7 @@ public class UserService {
         String username = userDto.getUsername();
         String password = userDto.getPassword();
 
-        if (usernameExists(username)) {throw new RuntimeException("username already exists");}
+        if (usernameExists(username)) {throw new UsernameAlreadyExistsException();}
         if (isValid(username) && isValid(password)) {
             String encodedPassword = encodePassword(password);
             User user = User.builder()
@@ -40,7 +40,7 @@ public class UserService {
                     .build();
             userRepository.save(user);
         } else {
-            throw new RuntimeException("Invalid username or password");
+            throw new InvalidInputException();
         }
     }
 
@@ -59,7 +59,7 @@ public class UserService {
                 encoded.append(String.format("%02x", b));
             }
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            throw new CannotEncodePasswordException();
         }
         return encoded.toString();
     }
@@ -73,12 +73,8 @@ public class UserService {
         String password = userDto.getPassword();
         String encodedPassword = encodePassword(password);
 
-        if (!usernameExists(username)) {
-            throw new RuntimeException("username doesn't exist");
-        }
-
-        User user = userRepository.findByUsername(username).get();
-        if (!encodedPassword.equals(user.getPassword())) throw new RuntimeException("password doesn't match");
+        User user = userRepository.findByUsername(username).orElseThrow(UsernameNotFoundException::new);
+        if (!encodedPassword.equals(user.getPassword())) throw new InvalidPasswordException();
 
         sessionManager.createSession(user, response);
     }

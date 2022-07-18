@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AllFormulaResponseDto {
+public class FormulaByUsernameResponseDto {
 
     @NotNull
     private String formula;

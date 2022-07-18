@@ -26,10 +26,10 @@ public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_SEQ_GENERATOR")
     @Column(name = "USER_ID")
-    private Long id;
+    private Long userId;
 
     @NotBlank
-    @Length(max = 255, message = "아이가 너무 김")
+    @Length(max = 255, message = "아이디가 너무 김")
     @Column(unique = true)
     private String username;
 

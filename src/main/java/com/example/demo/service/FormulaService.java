@@ -1,15 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.request.FormulaDto;
-import com.example.demo.dto.response.AllFormulaResponseDto;
+import com.example.demo.dto.response.FormulaByUsernameResponseDto;
 import com.example.demo.dto.response.FormulaResponseDto;
 import com.example.demo.entity.Formula;
+import com.example.demo.exception.type.NoFormulaByThisUsernameException;
 import com.example.demo.repository.FormulaRepository;
 import com.example.demo.security.SessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -27,7 +25,6 @@ public class FormulaService {
 
     private final FormulaRepository formulaRepository;
 
-    @Autowired
     private final SessionManager sessionManager;
 
     public FormulaResponseDto save(HttpServletRequest request, FormulaDto formulaDto) {
@@ -54,13 +51,13 @@ public class FormulaService {
         return isCorrect;
     }
 
-    public List<AllFormulaResponseDto> getAll(HttpServletRequest request, String username, Pageable pageable) {
+    public List<FormulaByUsernameResponseDto> getAll(HttpServletRequest request, String username, Pageable pageable) {
         checkSession(request);
         List<Formula> formulas = formulaRepository.findAllByUsername(username, pageable);
-        if (formulas.isEmpty()) throw new RuntimeException("There is no formula by this username");
-        List<AllFormulaResponseDto> responseDtos = new ArrayList<>();
+        if (formulas.isEmpty()) throw new NoFormulaByThisUsernameException();
+        List<FormulaByUsernameResponseDto> responseDtos = new ArrayList<>();
         for (Formula formula : formulas) {
-            responseDtos.add(new AllFormulaResponseDto(formula.getFormula(), formula.getIsCorrect()));
+            responseDtos.add(new FormulaByUsernameResponseDto(formula.getFormula(), formula.getIsCorrect()));
         }
         return responseDtos;
     }

@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.request.FormulaDto;
 import com.example.demo.dto.request.UsernameDto;
-import com.example.demo.dto.response.AllFormulaResponseDto;
+import com.example.demo.dto.response.FormulaByUsernameResponseDto;
 import com.example.demo.dto.response.FormulaResponseDto;
 import com.example.demo.service.FormulaService;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +33,9 @@ public class FormulaController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<AllFormulaResponseDto>> getAll (HttpServletRequest request, @Valid @RequestBody UsernameDto usernameDto,
-                                                               @PageableDefault(size=5, sort="formula", direction= Sort.Direction.DESC) Pageable pageable) {
-        List<AllFormulaResponseDto> response = formulaService.getAll(request, usernameDto.getUsername(), pageable);
+    public ResponseEntity<List<FormulaByUsernameResponseDto>> getAll (HttpServletRequest request, @Valid @RequestBody UsernameDto usernameDto,
+                                                                      @PageableDefault(size=5, sort="formula", direction= Sort.Direction.DESC) Pageable pageable) {
+        List<FormulaByUsernameResponseDto> response = formulaService.getAll(request, usernameDto.getUsername(), pageable);
         return ResponseEntity.ok(response);
     }
 }
